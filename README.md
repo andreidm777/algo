@@ -605,3 +605,23 @@ func main() {
     }
 }
 ```
+
+# поиск максимальной подстроки с невстречающимися символами
+
+```go
+func lengthOfLongestSubstring(s string) int {
+	maxLen := 0
+	left := 0
+	charIndex := make(map[byte]int)
+
+	for right := 0; right < len(s); right++ {
+		if idx, exists := charIndex[s[right]]; exists && idx >= left {
+			left = idx + 1
+		}
+		charIndex[s[right]] = right
+		maxLen = max(maxLen, right-left+1)
+	}
+
+	return maxLen
+}
+```
