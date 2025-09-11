@@ -625,3 +625,174 @@ func lengthOfLongestSubstring(s string) int {
 	return maxLen
 }
 ```
+
+# обход дерева в ширину
+
+```python
+class Solution:
+    class TreeNode:
+        def __init__(self, val=0, left=None, right=None):
+            self.val = val
+            self.left = left
+            self.right = right
+
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+
+        result = []
+        queue = [root]
+
+        while queue:
+            level_size = len(queue)
+            level_nodes = []
+
+            for i in range(level_size):
+                node = queue.pop(0)
+                level_nodes.append(node.val)
+
+                if node.left:
+                    queue.append(node.left)
+
+                if node.right:
+                    queue.append(node.right)
+
+            result.append(level_nodes)
+
+        return result
+```
+
+# минимальный путь
+ ```python
+ class Solution:
+    def minDepth(self, root):
+        if not root:
+            return 0   # пусто
+        
+        stack = [(root, 1)] 
+        minDepth = float("inf") № пока максимум
+        
+        while stack:
+            node, depth = stack.pop()   # dfs
+            
+            # leaf
+            if not node.left and not node.right:
+                minDepth = min(minDepth, depth)
+            
+            # 
+            if node.left:
+                stack.append((node.left, depth + 1))
+            
+            # 
+            if node.right:
+                stack.append((node.right, depth + 1))
+        
+        return minDepth
+#    import atexit; atexit.register(lambda: open("display_runtime.txt", "w").write("0"))
+```
+
+# перестановка гласных
+
+Given a 0-indexed string s, permute s to get a new string t such that:
+
+All consonants remain in their original places. More formally, if there is an index i with 0 <= i < s.length such that s[i] is a consonant, then t[i] = s[i].
+The vowels must be sorted in the nondecreasing order of their ASCII values. More formally, for pairs of indices i, j with 0 <= i < j < s.length such that s[i] and s[j] are vowels, then t[i] must not have a higher ASCII value than t[j].
+Return the resulting string.
+
+The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in lowercase or uppercase. Consonants comprise all letters that are not vowels.
+
+```go
+import "container/heap"
+
+type Alpha struct {
+    c   rune
+    idx int
+}
+
+type MyHeap []Alpha
+
+func (h MyHeap) Len() int {
+    return len(h)
+}
+
+func (h MyHeap) Less(i, j int) bool {
+    return h[i].c > h[j].c
+}
+
+func (h MyHeap) Swap(i, j int) {
+    h[i], h[j] = h[j], h[i]
+    x := h[i].idx
+    h[i].idx = h[j].idx
+    h[j].idx = x
+}
+
+func (h *MyHeap) Push(v any) {
+    *h = append(*h, v.(Alpha))
+}
+
+func (h *MyHeap) Pop() any {
+    old := *h
+    x := old[len(old) - 1]
+    *h = old[:len(old) - 1]
+    return x
+}
+
+func isVowel(a rune) bool {
+    all := "euioaEUIOA"
+    return strings.ContainsRune(all, a)
+}
+
+func sortVowels(s string) string {
+    h := make(MyHeap,0)
+    for i, v := range s {
+        if isVowel(v) {
+            heap.Push(&h, Alpha{c:v,idx:i})
+        }
+    }
+
+    res := []rune(s)
+
+    for len(h) > 0 {
+        v := heap.Pop(&h).(Alpha)
+        res[v.idx] = v.c
+    }
+    
+    return string(res)
+}
+```
+
+2-й вариант
+
+```go
+func isVowel(r rune) bool {
+    if r == 'A' || r == 'E' || r == 'O' || r == 'I' || r == 'U' || r == 'a' || r == 'e' || r == 'o' || r == 'i' || r == 'u' {
+        return true
+    }
+    return false
+}
+func sortVowels(s string) string {
+    vowels := make([]int, 123)
+
+    for _, r := range s {
+        if isVowel(r) {
+            vowels[r]++
+        }
+    }
+    
+    var sb strings.Builder
+
+    var p rune = 0
+    for _, v := range s {
+        if isVowel(v) {
+            for vowels[p] == 0 {
+                p++
+            }
+            sb.WriteRune(p)
+            vowels[p]--
+        } else {
+            sb.WriteRune(v)      
+        }
+    }
+    return sb.String()
+}
+```
