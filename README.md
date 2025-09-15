@@ -796,3 +796,182 @@ func sortVowels(s string) string {
     return sb.String()
 }
 ```
+
+# проверка BST на валидность
+
+```go
+// стеком
+// Итеративное решение с использованием стека
+func isValidBSTIterative(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	
+	stack := []*TreeNode{}
+	var prev *TreeNode = nil
+	current := root
+	
+	for current != nil || len(stack) > 0 {
+		// Добираемся до самого левого узла
+		for current != nil {
+			stack = append(stack, current)
+			current = current.Left
+		}
+		
+		// Извлекаем узел из стека
+		current = stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		
+		// Проверяем порядок значений (должны идти в возрастающем порядке)
+		if prev != nil && current.Val <= prev.Val {
+			return false
+		}
+		
+		prev = current
+		current = current.Right
+	}
+	
+	return true
+}
+
+// Рекурсивное решение с проверкой диапазона значений
+func isValidBSTRecursive(root *TreeNode) bool {
+	return validate(root, nil, nil)
+}
+
+func validate(node *TreeNode, min *int, max *int) bool {
+	if node == nil {
+		return true
+	}
+	
+	// Проверяем, что значение узла находится в допустимом диапазоне
+	if (min != nil && node.Val <= *min) || (max != nil && node.Val >= *max) {
+		return false
+	}
+	
+	// Рекурсивно проверяем левое и правое поддеревья
+	return validate(node.Left, min, &node.Val) && 
+	       validate(node.Right, &node.Val, max)
+}
+
+func isValid(node *TreeNode, low, high int64) bool {
+    if node == nil {
+        return true
+    }
+    // если текущая вершина не удволетворяет условиям BST то и все
+    // дерево не является правильным BST и возвращаем false
+    nodeValue := int64(node.Val)
+    if low >= nodeValue || nodeValue >= high) {
+        return false;
+    }
+    // обновляем минимальное и максимальное значение для поддеревьев
+    return isValid(node.Left, low, nodeValue) &&
+            isValid(node.Right, nodeValue, high)
+}
+
+func isValidBST(root *TreeNode) bool {
+    return isValid(root, math.MinInt64, math.MaxInt64)
+}
+```
+
+# из массива в дерево
+
+```go
+func buldBST(nums []int, l, r int) *TreeNode {
+    if l > r {
+        return nil
+    }
+
+    // вычисляем средний элемент между l и r
+    mid := (l + r) / 2
+
+    return &TreeNode{
+        Val: nums[mid],
+        // рекурсивно строим левое поддерево,
+        // которое будет сбалансированно по высоте
+        Left: buldBST(nums, l, mid - 1),
+        // рекурсивно строим правое поддерево,
+        // которое будет сбалансированно по высоте
+        Right: buldBST(nums, mid + 1, r),
+    }
+}
+
+func sortedArrayToBST(nums []int) *TreeNode {
+    return buldBST(nums, 0, len(nums) - 1)
+}
+```
+
+# К-ый наименьшый элемент в BST
+
+```go
+func inorder(node *TreeNode, k *int) *TreeNode {
+    if node == nil {
+        return nil
+    }
+
+    // идем влево
+    result := inorder(node.Left, k)
+    if result != nil {
+        // если уже нашлий k-ую наименьшую
+        return result
+    }
+    
+    // проверяем k
+    *k -= 1
+    if (*k == 0) {
+        // нашлий k-ую наименьшую
+        return node
+    }
+
+    // идем вправо
+    return inorder(node.Right, k)
+}
+
+func kthSmallest(root *TreeNode, k int) int {
+    result := inorder(root, &k)
+    return result.Val
+}
+```
+
+# Дано два узла бинарного дерева p и q. Нужно вернуть их наименьшего общего предка (LCA). При этом нужно решить за O(1) по дополнительной памяти
+Каждый узел помимо детей хранит ссылку на родительский узел
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node parent;
+}
+
+```go
+func depth(node *Node) int {
+    result := 0
+    for node != nil {
+        result += 1
+        node = node.Parent
+    }
+    return result
+}
+
+func lowestCommonAncestor(p *Node, q *Node) *Node {
+    // находим глубину каждой вершины
+    pDepth := depth(p)
+    qDepth := depth(q)
+    // в вершине p храним самую глубокую вершину
+    if qDepth > pDepth {
+        p, q = q, p
+        pDepth, qDepth = qDepth, pDepth
+    }
+    // делаем "pDepth - qDepth" шагов вверх, чтобы
+    // вершины имели одну глубину, ведь вершины могут совпать
+    // только имея одинаковую глубину
+    for i := 0; i < (pDepth - qDepth); i++ {
+        p = p.Parent
+    }
+    // пока вершины не совпадут будем уменьшать глубину
+    for p != q {
+        p = p.Parent
+        q = q.Parent
+    }
+    return p
+}
+```

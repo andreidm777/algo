@@ -30,74 +30,103 @@ func twoSum(nums []int, target int) []int {
 }
 
 func main() {
-	var n, k, from, to int
+	/*
+		var n, k, from, to int
 
-	fmt.Scanf("%d", &n)
+		fmt.Scanf("%d", &n)
 
-	cities := make([]city, 0, n)
+		cities := make([]city, 0, n)
 
-	y := n
-	for y > 0 {
-		cityTmp := city{}
-		fmt.Scanf("%d %d", &cityTmp.x, &cityTmp.y)
-		cities = append(cities, cityTmp)
-		y--
-	}
-
-	fmt.Scanf("%d", &k)
-	fmt.Scanf("%d %d", &from, &to)
-
-	start := from - 1
-	end := to - 1
-
-	graph := make([][]int, n)
-
-	for i := 0; i < n; i++ {
-		graph[i] = make([]int, 0)
-	}
-
-	fmt.Println(graph)
-
-	for i := 0; i < len(cities); i++ {
-		for j := i + 1; j < len(cities); j++ {
-			dist := calculateDistance(cities[i], cities[j])
-			if dist <= k {
-				graph[i] = append(graph[i], j)
-				graph[j] = append(graph[j], i)
-			}
+		y := n
+		for y > 0 {
+			cityTmp := city{}
+			fmt.Scanf("%d %d", &cityTmp.x, &cityTmp.y)
+			cities = append(cities, cityTmp)
+			y--
 		}
-	}
 
-	queue := []int{start}
-	visited := make(map[int]bool)
-	step := 0
+		fmt.Scanf("%d", &k)
+		fmt.Scanf("%d %d", &from, &to)
 
-	fmt.Println(graph)
+		start := from - 1
+		end := to - 1
 
-	for len(queue) > 0 {
-		stepLen := len(queue)
-		for i := 0; i < stepLen; i++ {
-			cursor := queue[0]
-			queue = queue[1:]
+		graph := make([][]int, n)
 
-			if !visited[cursor] {
-				visited[cursor] = true
-			}
+		for i := 0; i < n; i++ {
+			graph[i] = make([]int, 0)
+		}
 
-			if cursor == end {
-				fmt.Println(step)
-				return
-			}
+		fmt.Println(graph)
 
-			for _, next := range graph[cursor] {
-				if !visited[next] {
-					queue = append(queue, next)
+		for i := 0; i < len(cities); i++ {
+			for j := i + 1; j < len(cities); j++ {
+				dist := calculateDistance(cities[i], cities[j])
+				if dist <= k {
+					graph[i] = append(graph[i], j)
+					graph[j] = append(graph[j], i)
 				}
 			}
 		}
-		step++
-	}
 
-	fmt.Println(-1)
+		queue := []int{start}
+		visited := make(map[int]bool)
+		step := 0
 
+		fmt.Println(graph)
+
+		for len(queue) > 0 {
+			stepLen := len(queue)
+			for i := 0; i < stepLen; i++ {
+				cursor := queue[0]
+				queue = queue[1:]
+
+				if !visited[cursor] {
+					visited[cursor] = true
+				}
+
+				if cursor == end {
+					fmt.Println(step)
+					return
+				}
+
+				for _, next := range graph[cursor] {
+					if !visited[next] {
+						queue = append(queue, next)
+					}
+				}
+			}
+			step++
+		}
+
+		fmt.Println(-1)
+
+		//b := B(&C{})
+	*/
+	var b *C
+
+	fmt.Println(b.Get())
+
+	arr := [10]int{}
+
+	arr2 := [10]int{}
+
+	arr[2] = 10
+	arr2[2] = 9
+
+	arr2[2]++
+
+	fmt.Println(arr2 == arr)
+
+}
+
+type B interface {
+	Get() int
+}
+
+type C struct {
+}
+
+func (c *C) Get() int {
+	return 1
 }
