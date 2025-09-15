@@ -975,3 +975,396 @@ func lowestCommonAncestor(p *Node, q *Node) *Node {
     return p
 }
 ```
+
+# задача восстановление дерева где два узла поменены местами in-order обход
+
+```go
+package main
+
+import "fmt"
+
+// Определение структуры узла бинарного дерева
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+func recoverTree(root *TreeNode) {
+    // Переменные для хранения ошибочных узлов
+    var first, second, prev *TreeNode
+    
+    // Вспомогательная функция для обхода в порядке in-order
+    var traverse func(node *TreeNode)
+    traverse = func(node *TreeNode) {
+        if node == nil {
+            return
+        }
+        
+        // Рекурсивный обход левого поддерева
+        traverse(node.Left)
+        
+        // Проверка нарушения порядка в in-order обходе
+        if prev != nil && prev.Val > node.Val {
+            // Если first еще не найден, сохраняем предыдущий узел
+            if first == nil {
+                first = prev
+            }
+            // Всегда сохраняем текущий узел как второй ошибочный
+            second = node
+        }
+        
+        // Обновляем предыдущий узел
+        prev = node
+        
+        // Рекурсивный обход правого поддерева
+        traverse(node.Right)
+    }
+    
+    // Запускаем in-order обход
+    traverse(root)
+    
+    // Меняем значения ошибочных узлов местами
+    if first != nil && second != nil {
+        first.Val, second.Val = second.Val, first.Val
+    }
+}
+
+// Вспомогательная функция для создания дерева
+func createTree(values []interface{}) *TreeNode {
+    if len(values) == 0 || values[0] == nil {
+        return nil
+    }
+    
+    root := &TreeNode{Val: values[0].(int)}
+    queue := []*TreeNode{root}
+    i := 1
+    
+    for i < len(values) && len(queue) > 0 {
+        current := queue[0]
+        queue = queue[1:]
+        
+        // Левый потомок
+        if i < len(values) && values[i] != nil {
+            current.Left = &TreeNode{Val: values[i].(int)}
+            queue = append(queue, current.Left)
+        }
+        i++
+        
+        // Правый потомок
+        if i < len(values) && values[i] != nil {
+            current.Right = &TreeNode{Val: values[i].(int)}
+            queue = append(queue, current.Right)
+        }
+        i++
+    }
+    
+    return root
+}
+
+// Функция для печати дерева (in-order)
+func printInOrder(root *TreeNode) {
+    if root == nil {
+        return
+    }
+    printInOrder(root.Left)
+    fmt.Printf("%d ", root.Val)
+    printInOrder(root.Right)
+}
+
+func main() {
+    // Пример 1: [1,3,null,null,2] -> [3,1,null,null,2]
+    fmt.Println("Пример 1:")
+    root1 := createTree([]interface{}{1, 3, nil, nil, 2})
+    fmt.Print("До: ")
+    printInOrder(root1)
+    fmt.Println()
+    
+    recoverTree(root1)
+    fmt.Print("После: ")
+    printInOrder(root1)
+    fmt.Println("\n")
+    
+    // Пример 2: [3,1,4,null,null,2] -> [2,1,4,null,null,3]
+    fmt.Println("Пример 2:")
+    root2 := createTree([]interface{}{3, 1, 4, nil, nil, 2})
+    fmt.Print("До: ")
+    printInOrder(root2)
+    fmt.Println()
+    
+    recoverTree(root2)
+    fmt.Print("После: ")
+    printInOrder(root2)
+    fmt.Println()
+}
+```
+
+# найти ближайшего соседа в ВST дереве и написать решение на golang c сложностью алгоритма
+
+```go
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+// Узел бинарного дерева
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+// Функция для поиска ближайшего значения к target
+func closestValue(root *TreeNode, target float64) int {
+    closest := root.Val
+    current := root
+    
+    for current != nil {
+        // Обновляем ближайшее значение, если нашли лучшее
+        if math.Abs(float64(current.Val)-target) < math.Abs(float64(closest)-target) {
+            closest = current.Val
+        }
+        
+        // Двигаемся по дереву
+        if target < float64(current.Val) {
+            current = current.Left
+        } else if target > float64(current.Val) {
+            current = current.Right
+        } else {
+            // Если нашли точное совпадение, возвращаем его
+            return current.Val
+        }
+    }
+    
+    return closest
+}
+
+// Вспомогательная функция для создания BST
+func insert(root *TreeNode, val int) *TreeNode {
+    if root == nil {
+        return &TreeNode{Val: val}
+    }
+    
+    if val < root.Val {
+        root.Left = insert(root.Left, val)
+    } else if val > root.Val {
+        root.Right = insert(root.Right, val)
+    }
+    
+    return root
+}
+
+// Функция для демонстрации работы
+func main() {
+    // Создаем BST: [4,2,5,1,3]
+    var root *TreeNode
+    values := []int{4, 2, 5, 1, 3}
+    
+    for _, val := range values {
+        root = insert(root, val)
+    }
+    
+    // Тестовые случаи
+    testCases := []float64{3.4, 3.6, 0.5, 5.5, 2.5}
+    
+    for _, target := range testCases {
+        result := closestValue(root, target)
+        fmt.Printf("Ближайшее к %.1f: %d\n", target, result)
+    }
+}
+```
+
+# дополнительно запоминаем путь
+
+```go
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+// Расширенная версия с подробной информацией
+func closestValueDetailed(root *TreeNode, target float64) (int, []int) {
+    closest := root.Val
+    path := []int{}
+    current := root
+    
+    for current != nil {
+        path = append(path, current.Val)
+        
+        // Обновляем ближайшее значение
+        currentDiff := math.Abs(float64(current.Val) - target)
+        closestDiff := math.Abs(float64(closest) - target)
+        
+        if currentDiff < closestDiff {
+            closest = current.Val
+        }
+        
+        // Сохраняем направление движения
+        if target < float64(current.Val) {
+            current = current.Left
+        } else if target > float64(current.Val) {
+            current = current.Right
+        } else {
+            break // Точное совпадение
+        }
+    }
+    
+    return closest, path
+}
+
+// Рекурсивная версия (альтернативная реализация)
+func closestValueRecursive(root *TreeNode, target float64) int {
+    return helper(root, target, root.Val)
+}
+
+func helper(node *TreeNode, target float64, closest int) int {
+    if node == nil {
+        return closest
+    }
+    
+    // Обновляем ближайшее значение
+    if math.Abs(float64(node.Val)-target) < math.Abs(float64(closest)-target) {
+        closest = node.Val
+    }
+    
+    // Выбираем направление для продолжения поиска
+    if target < float64(node.Val) {
+        return helper(node.Left, target, closest)
+    } else if target > float64(node.Val) {
+        return helper(node.Right, target, closest)
+    }
+    
+    return closest
+}
+
+func main() {
+    // Создаем более сложное BST
+    var root *TreeNode
+    values := []int{8, 3, 10, 1, 6, 14, 4, 7, 13}
+    
+    for _, val := range values {
+        root = insert(root, val)
+    }
+    
+    targets := []float64{5.2, 9.8, 12.1, 0.5, 15.0}
+    
+    fmt.Println("Поиск ближайших значений:")
+    for _, target := range targets {
+        result, path := closestValueDetailed(root, target)
+        fmt.Printf("Target: %.1f -> Ближайшее: %d, Путь: %v\n", 
+                   target, result, path)
+        
+        // Альтернативный вызов
+        result2 := closestValueRecursive(root, target)
+        fmt.Printf("  Рекурсивный результат: %d\n", result2)
+    }
+}
+
+func insert(root *TreeNode, val int) *TreeNode {
+    if root == nil {
+        return &TreeNode{Val: val}
+    }
+    
+    if val < root.Val {
+        root.Left = insert(root.Left, val)
+    } else if val > root.Val {
+        root.Right = insert(root.Right, val)
+    }
+    
+    return root
+}
+```
+```python
+def insert_into_bst(root, val):
+    """
+    Вставляет значение в BST и возвращает корень дерева
+    """
+    if not root:
+        return TreeNode(val)
+    
+    if val < root.val:
+        root.left = insert_into_bst(root.left, val)
+    else:
+        root.right = insert_into_bst(root.right, val)
+    
+    return root
+```
+```go
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+func isBalanced(root *TreeNode) bool {
+    return checkBalance(root) != -1
+}
+
+func checkBalance(node *TreeNode) int {
+    if node == nil {
+        return 0
+    }
+    
+    leftHeight := checkBalance(node.Left)
+    if leftHeight == -1 {
+        return -1
+    }
+    
+    rightHeight := checkBalance(node.Right)
+    if rightHeight == -1 {
+        return -1
+    }
+    
+    if math.Abs(float64(leftHeight-rightHeight)) > 1 {
+        return -1
+    }
+    
+    return max(leftHeight, rightHeight) + 1
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+// Пример использования
+func main() {
+    // Сбалансированное дерево
+    balanced := &TreeNode{
+        Val: 1,
+        Left: &TreeNode{Val: 2},
+        Right: &TreeNode{Val: 3},
+    }
+    
+    // Несбалансированное дерево
+    unbalanced := &TreeNode{
+        Val: 1,
+        Left: &TreeNode{
+            Val: 2,
+            Left: &TreeNode{Val: 3},
+        },
+    }
+    
+    fmt.Println("Balanced tree:", isBalanced(balanced))     // true
+    fmt.Println("Unbalanced tree:", isBalanced(unbalanced)) // false
+}
+```
