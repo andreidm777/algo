@@ -155,7 +155,7 @@ func calculateDistance(city1, city2 City) int {
 */
 
 func neighbors(n []uint) uint {
-
+	return 0
 }
 
 /*
