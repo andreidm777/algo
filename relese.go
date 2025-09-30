@@ -11,7 +11,7 @@ import (
 Задача реализовать функцию Do, которая будет получать данные из Producer и передавать их в Consumer. но  с условиями
 1 - из продюссера может прийти пачка данных меньше MaxBatch - но в консюмер надо передавать данные пачками равными или чуть меньше чем в MaxBatch - те данные нужно  группировать
 2 - после успешной отправки данных в консюмер надо подтвердить это коммитом в продюссере, коммиты должны идти строго в той же последовательности как и отправленные данные
-реши задачу используя алгоритм потоки данных
+реши задачу
 */
 
 const MaxBatch = 9999
@@ -130,3 +130,91 @@ func Do(p Producer, c Consumer) error {
 	wg.Wait()
 	return err
 }
+
+// longest string
+func lengthOfLongestSubstring(s string) int {
+	lastSeen := make([]int, 128) // store last seen index
+	for i := range lastSeen {
+		lastSeen[i] = -1
+	}
+
+	left, maxLen := 0, 0
+
+	for right := 0; right < len(s); right++ {
+		ch := s[right]
+
+		if lastSeen[ch] >= left {
+			left = lastSeen[ch] + 1
+		}
+		lastSeen[ch] = right
+
+		if right-left+1 > maxLen {
+			maxLen = right - left + 1
+		}
+	}
+
+	return maxLen
+}
+
+/**
+ * Найти ближайшего общего предка двух узлов дерева
+ * Ограничение по памяти O(1)
+ */
+
+record Node(
+    Node parent,
+    Node left,
+    Node right
+) {}
+
+public Node lowestCommonAncestor(Node a, Node b) {
+    if (a == null || b == null) {
+        return null;
+    }
+    
+    // Находим глубину каждого узла
+    int depthA = findDepth(a);
+    int depthB = findDepth(b);
+    
+    // Выравниваем узлы по глубине
+    Node nodeA = a;
+    Node nodeB = b;
+    
+    if (depthA > depthB) {
+        // Поднимаем узел A до уровня B
+        int diff = depthA - depthB;
+        for (int i = 0; i < diff; i++) {
+            nodeA = nodeA.parent;
+        }
+    } else if (depthB > depthA) {
+        // Поднимаем узел B до уровня A
+        int diff = depthB - depthA;
+        for (int i = 0; i < diff; i++) {
+            nodeB = nodeB.parent;
+        }
+    }
+    
+    // Поднимаем оба узла одновременно, пока не найдем общего предка
+    while (nodeA != nodeB) {
+        nodeA = nodeA.parent;
+        nodeB = nodeB.parent;
+    }
+    
+    return nodeA; // nodeA == nodeB, это LCA
+}
+
+private int findDepth(Node node) {
+    int depth = 0;
+    Node current = node;
+    
+    while (current != null) {
+        depth++;
+        current = current.parent;
+    }
+    
+    return depth;
+}
+
+//Память: O(1) - используем только несколько переменных
+
+//Время: O(h) - где h высота дерева

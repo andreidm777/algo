@@ -1368,3 +1368,498 @@ func main() {
     fmt.Println("Unbalanced tree:", isBalanced(unbalanced)) // false
 }
 ```
+
+# максимальная дистанция
+
+```go
+func maxDistToClosest(seats []int) int {
+    sum, result, first := 0, 0, true
+
+    for _, seat := range seats {
+        if seat == 1 {
+            if first {
+                result = sum
+                first = false
+            } else {
+                result = max((sum+1)/2, result)
+            }
+            sum = 0
+        } else {
+            sum++
+        }
+    }
+
+    return max(sum, result)
+}
+```
+
+```go
+func checkInclusion(s1 string, s2 string) bool {
+
+    if len(s1) > len(s2) {
+        return false
+    }
+
+    window := [123]int{}
+    pattern := [123]int{}
+
+    for i := range s1 {
+        pattern[s1[i]]++
+    }
+
+    for i:=0; i< len(s1); i++ {
+        window[s2[i]]++
+    }
+
+    if window == pattern {
+        return true
+    }
+
+    for i:=1; i < len(s2) - len(s1) + 1; i++ {
+        window[s2[i-1]]--
+        window[s2[i + len(s1) - 1]]++
+        if window == pattern {
+            return true
+        }
+    }
+
+    return false
+}
+```
+
+```go
+func merge(intervals [][]int) [][]int {
+
+    if len(intervals) == 1 {
+        return intervals
+    }
+    
+    sort.Slice(intervals, func(i, j int) bool {
+        return intervals[i][0] < intervals[j][0]
+    })
+    
+    result := intervals[:1]
+
+    for i := 1; i < len(intervals); i++ {
+        last := result[len(result) - 1]
+        current := intervals[i]
+        if current[0] <= last[1] {
+            last[1] = max(last[1], current[1])
+        } else {
+            result = append(result, current)
+        }
+    }
+
+    return result
+}
+```
+
+```go
+type RandomizedSet struct {
+    r map[int]int
+    data []int
+}
+
+
+func Constructor() RandomizedSet {
+    return RandomizedSet{
+        r: make(map[int]int),
+        data: make([]int,0),
+    }
+}
+
+
+func (this *RandomizedSet) Insert(val int) bool {
+    if _, ok := this.r[val]; ok {
+        return false
+    }
+
+    this.data = append(this.data, val)
+
+    this.r[val] = len(this.data) - 1
+
+    return true
+}
+
+
+func (this *RandomizedSet) Remove(val int) bool {
+    if idx, ok := this.r[val]; ok {
+        delete(this.r, val)
+        if idx != len(this.data) - 1 {
+            this.data[idx] = this.data[len(this.data) - 1]
+            this.r[this.data[idx]] = idx
+        }
+        this.data = this.data[:len(this.data) - 1]
+        return true
+    }
+    return false
+}
+
+
+func (this *RandomizedSet) GetRandom() int {
+    return this.data[rand.Intn(len(this.data))]
+}
+
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * obj := Constructor();
+ * param_1 := obj.Insert(val);
+ * param_2 := obj.Remove(val);
+ * param_3 := obj.GetRandom();
+ */
+ ```
+
+ ```go
+ func abs(a int) int {
+    if a < 0 {
+        return -a
+    }
+    return a
+}
+
+func findClosestElements(arr []int, k int, x int) []int {
+    left := 0
+    right := len(arr) - 1
+    
+    for right - left >= k {
+        if abs(arr[left] - x) > abs(arr[right] - x) {
+            left++
+        } else {
+            right--
+        }
+    }
+
+    return arr[left:right+1]
+}
+```
+
+```go
+type MinStack struct {
+    stack    []int
+    minStack []int
+}
+
+func Constructor() MinStack {
+    return MinStack{
+        stack:    make([]int, 0),
+        minStack: make([]int, 0),
+    }
+}
+
+func (this *MinStack) Push(val int) {
+    this.stack = append(this.stack, val)
+    
+    // Добавляем в minStack только если это новый минимум
+    if len(this.minStack) == 0 || val <= this.minStack[len(this.minStack)-1] {
+        this.minStack = append(this.minStack, val)
+    }
+}
+
+func (this *MinStack) Pop() {
+    if len(this.stack) == 0 {
+        return
+    }
+    
+    popped := this.stack[len(this.stack)-1]
+    this.stack = this.stack[:len(this.stack)-1]
+    
+    // Удаляем из minStack только если удаляем текущий минимум
+    if popped == this.minStack[len(this.minStack)-1] {
+        this.minStack = this.minStack[:len(this.minStack)-1]
+    }
+}
+
+func (this *MinStack) Top() int {
+    return this.stack[len(this.stack)-1]
+}
+
+func (this *MinStack) GetMin() int {
+    return this.minStack[len(this.minStack)-1]
+}
+```
+
+```python
+#2. Неэффективное сравнение строк с использованием срезов
+#Проблема: хотя текущее решение верно, использование срезов строк ( s[i+1:]и t[i+1:]) создаёт новые строковые #объекты в Python, что может быть неэффективно для очень длинных строк. Это добавляет ненужную сложность, #связанную с пространством.
+
+Более эффективное решение: вместо создания подстрок сравнивайте символы напрямую:
+
+def isOneEditDistance(self, s: str, t: str) -> bool:
+    if len(s) < len(t):
+        return self.isOneEditDistance(t, s)
+
+    len_s, len_t = len(s), len(t)
+    if len_s - len_t > 1:
+        return False
+
+    for i in range(len_t):
+        if s[i] != t[i]:
+            if len_s == len_t:
+                # Compare remaining characters one by one
+                return all(s[j] == t[j] for j in range(i + 1, len_t))
+            else:
+                # Compare s[i+1:] with t[i:] without creating substrings
+                return all(s[j + 1] == t[j] for j in range(i, len_t))
+
+    return len_s == len_t + 1
+```
+
+```go
+func validPalindrome(s string) bool {
+   left := 0
+   right := len(s) - 1
+   
+   if len(s) <= 2 {
+    return true
+  }
+
+   for left < right {
+        if s[left] != s[right] {
+            return isPalindome(s, left+1, right) || isPalindome(s, left, right - 1)
+        }
+        left++
+        right--
+   }
+   return true
+}
+
+func isPalindome(s string, l, r int) bool {
+    for l < r {
+        if s[l] != s[r] {
+            return false
+        }
+        l++
+        r--
+    }
+    return true
+}
+```
+
+```go
+func findAnagrams(s string, p string) []int {
+    result := make([]int, 0)
+
+    window := [123]int{}
+    patt := [123]int{}
+
+    if len(s) < len(p) {
+        return result
+    }
+
+    for i := range p {
+        window[p[i]]++
+        patt[s[i]]++
+    }
+
+    if window == patt {
+        result = append(result, 0)
+    }
+
+    for i := 1; i <= len(s) - len(p); i++ {
+        patt[s[i-1]]--
+        patt[s[i + len(p) - 1]]++
+        if window == patt {
+            result = append(result, i)
+        }
+        
+    }
+
+    return result
+    
+}
+```
+```go
+package main
+
+import "fmt"
+
+func countSubstringsWithoutRepeats(s string) int {
+    n := len(s)
+    if n == 0 {
+        return 0
+    }
+    
+    count := 0
+    // Используем два указателя (sliding window)
+    left := 0
+    charSet := make(map[byte]bool)
+    
+    for right := 0; right < n; right++ {
+        // Если текущий символ уже есть в окне, двигаем левый указатель
+        for charSet[s[right]] {
+            delete(charSet, s[left])
+            left++
+        }
+        
+        // Добавляем текущий символ в множество
+        charSet[s[right]] = true
+        
+        // Все подстроки от left до right не имеют повторяющихся символов
+        // Количество таких подстрок = (right - left + 1)
+        count += (right - left + 1)
+    }
+    
+    return count
+}
+
+// Альтернативное решение с массивом вместо map (более эффективное для латинских символов)
+func countSubstringsWithoutRepeatsOptimized(s string) int {
+    n := len(s)
+    if n == 0 {
+        return 0
+    }
+    
+    count := 0
+    left := 0
+    // Используем массив для отслеживания последних позиций символов
+    lastSeen := make([]int, 128) // ASCII символы
+    for i := range lastSeen {
+        lastSeen[i] = -1
+    }
+    
+    for right := 0; right < n; right++ {
+        // Если символ уже встречался и его позиция >= left, двигаем left
+        if lastSeen[s[right]] >= left {
+            left = lastSeen[s[right]] + 1
+        }
+        
+        lastSeen[s[right]] = right
+        count += (right - left + 1)
+    }
+    
+    return count
+}
+
+func main() {
+    testCases := []string{
+        "abc",
+        "aaa",
+        "abac",
+        "abcabcbb",
+        "pwwkew",
+        "",
+        "a",
+    }
+    
+    for _, test := range testCases {
+        result1 := countSubstringsWithoutRepeats(test)
+        result2 := countSubstringsWithoutRepeatsOptimized(test)
+        fmt.Printf("Строка: \"%s\"\n", test)
+        fmt.Printf("  Количество подстрок без повторений: %d\n", result1)
+        fmt.Printf("  Оптимизированная версия: %d\n", result2)
+        fmt.Println()
+    }
+}
+```
+
+```go
+package main
+
+// Дан массив точек целочисленными координатами (x, y).
+
+// Определить, существует ли вертикальная прямая, делящая все точки, не лежащие на ней,
+// на 2 симметричных относительно этой прямой набора точек.
+
+func isVertSym(arr [][2]int) bool {
+    if len(arr) == 0 {
+        return true
+    }
+
+    minX, maxY := arr[0][0], arr[0][0]
+    p := make(map[[2]int]int)
+
+    for _, v := range arr {
+        minX = min(minX, v[0])
+        maxX = max(maxY, v[0])
+        p[v]++
+    }
+
+    for k, v := range p {
+        xSem := maxX + minX - k[0]
+        if v != p[[2]int{xSem,k[1]}] {
+            return false
+        }
+    }
+
+    return true
+}
+
+func main() {
+    println(isVertSym([][2]int{{0, 0}, {0, 1}, {1, 1}, {2, 2}, {3, 1}, {4, 1}, {4, 0}})) // true
+    println(isVertSym([][2]int{{0, 0}, {0, 0}, {1, 1}, {2, 2}, {3, 1}, {4, 0}, {4, 0}})) // true
+    println(isVertSym([][2]int{{0, 0}, {0, 0}, {1, 1}, {2, 2}, {3, 1}, {4, 0}})) // false
+    println(isVertSym([][2]int{})) // true
+    println(isVertSym([][2]int{{0, 0}})) // true
+    println(isVertSym([][2]int{{0, 0}, {10, 0}})) // true
+    println(isVertSym([][2]int{{0, 0}, {11, 1}})) // false
+    println(isVertSym([][2]int{{0, 0}, {1, 0}, {3, 0}})) // false
+}
+```
+
+```go
+func sortedSquares(nums []int) []int {
+    n := len(nums)
+    result := make([]int, n)
+    
+    left, right := 0, n-1
+    pos := n-1 // fill from the end
+    
+    for left <= right {
+        leftSquare := nums[left] * nums[left]
+        rightSquare := nums[right] * nums[right]
+        
+        if leftSquare > rightSquare {
+            result[pos] = leftSquare
+            left++
+        } else {
+            result[pos] = rightSquare
+            right--
+        }
+        pos--
+    }
+    
+    return result
+}
+```
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func findDuplicateSubtrees(root *TreeNode) []*TreeNode {
+
+    res := map[string]int{}
+
+    result := make([]*TreeNode,0)
+
+    var treverse func(n *TreeNode) string
+
+    treverse = func(n *TreeNode) string {
+        if n == nil {
+            return "#"
+        }
+
+        left := treverse(n.Left)
+        right := treverse(n.Right)
+
+        subtree := left + "," + right + "," + strconv.Itoa(n.Val)
+
+        if v, ok := res[subtree]; ok && v == 1 {
+            result = append(result, n)
+        }
+
+        res[subtree]++
+
+        return subtree
+    }
+
+    treverse(root)
+
+    return result
+}
+```
