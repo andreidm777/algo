@@ -2083,4 +2083,190 @@ func longestSubarray(nums []int) int {
 }
 ```
 
+# 40. find-the-prefix-common-array-of-two-array
 
+You are given two 0-indexed integer permutations A and B of length n.
+
+A prefix common array of A and B is an array C such that C[i] is equal to the count of numbers that are present at or before the index i in both A and B.
+
+Return the prefix common array of A and B.
+
+A sequence of n integers is called a permutation if it contains all integers from 1 to n exactly once.
+
+```go
+func findThePrefixCommonArray(nums1 []int, nums2 []int) []int {
+	freq := make([]int, len(nums1)+1)
+	result := make([]int, len(nums1))
+
+	common := 0
+
+	for i := 0; i < len(nums1); i++ {
+		freq[nums1[i]]++
+		freq[nums2[i]]++
+
+		if nums1[i] == nums2[i] {
+			common++
+			result[i] = common
+			continue
+		}
+
+		if freq[nums1[i]] == 2 {
+			common++
+		}
+
+		if freq[nums2[i]] == 2 {
+			common++
+		}
+
+		result[i] = common
+	}
+
+	return result
+}
+```
+
+# 41. Given two strings s and t, return true if s is a subsequence of t, or false otherwise.
+
+A subsequence of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
+
+```go
+func isSubsequence(s string, t string) bool {
+    if len(s) == 0 {
+        return true
+    }
+    needFound := 0
+    for i := range t {
+        if t[i] == s[needFound] {
+            needFound++
+        }
+        if needFound == len(s) {
+            return true
+        }
+    }
+
+    return false
+}
+```
+
+# 42. самый длинный полиндром в строке
+
+```go
+
+func longestPalindrome(s string) string {
+    if len(s) < 2 {
+        return s
+    }
+    
+    start, maxLength := 0, 1
+    
+    for i := 0; i < len(s); i++ {
+        // Проверяем палиндромы нечетной длины
+        len1 := expandAroundCenter(s, i, i)
+        // Проверяем палиндромы четной длины
+        len2 := expandAroundCenter(s, i, i+1)
+        
+        // Выбираем максимальную длину
+        currentMax := max(len1, len2)
+        
+        if currentMax > maxLength {
+            maxLength = currentMax
+            start = i - (currentMax-1)/2
+        }
+    }
+    
+    return s[start:start+maxLength]
+}
+
+// Функция для расширения от центра
+func expandAroundCenter(s string, left int, right int) int {
+    for left >= 0 && right < len(s) && s[left] == s[right] {
+        left--
+        right++
+    }
+    // Возвращаем длину палиндрома
+    return right - left - 1
+}
+
+```
+
+# 43 самый длинный возрастающий массив
+
+```go
+func longestMonotonicSubarray(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
+    
+    maxLen := 1
+    incLen, decLen := 1, 1
+    
+    for i := 1; i < len(nums); i++ {
+        // Проверяем строго возрастающую последовательность
+        if nums[i] > nums[i-1] {
+            incLen++
+            decLen = 1
+        } 
+        // Проверяем строго убывающую последовательность
+        else if nums[i] < nums[i-1] {
+            decLen++
+            incLen = 1
+        } 
+        // Если числа равны, сбрасываем обе длины
+        else {
+            incLen = 1
+            decLen = 1
+        }
+        
+        maxLen = max(maxLen, incLen, decLen)
+    }
+    
+    return maxLen
+}
+```
+
+# 43. сложить два списка
+
+```go
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+    cur1, cur2 := l1, l2
+    save := 0
+
+    var root, last *ListNode
+    
+    for cur1 != nil || cur2 != nil || save != 0 {
+        val := save
+
+        if cur1 != nil {
+            val += cur1.Val
+            cur1 = cur1.Next
+        }
+
+        if cur2 != nil {
+            val += cur2.Val
+            cur2 = cur2.Next
+        }
+
+        node := &ListNode{ 
+            Val: (val % 10),
+        }
+        save = val / 10
+
+        if root == nil {
+            root = node
+        } else {
+            last.Next = node
+        }
+
+        last = node
+    }
+
+    return root
+}
+```
