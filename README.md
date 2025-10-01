@@ -24,6 +24,8 @@ Union-Find (Объединение-поиск, DSU)
 
 ## 1. Обход в глубину/ширину (DFS/BFS)
 
+Эта задача реализует алгоритмы поиска в глубину (DFS) и поиска в ширину (BFS) для обхода графа.
+
 ```go
 package main
 
@@ -93,6 +95,8 @@ func main() {
 ```
 
 ## 2. Алгоритм Дейкстры
+
+Алгоритм Дейкстры находит кратчайшие пути от одной вершины до всех других вершин в взвешенном графе с неотрицательными весами.
 
 ```go
 package main
@@ -180,7 +184,9 @@ func main() {
 }
 ```
 
-# поиск пути в лабиринте с bfs
+# 3. Поиск пути в лабиринте с BFS
+
+Эта задача реализует алгоритм поиска в ширину (BFS) для нахождения кратчайшего пути в лабиринте.
 
 ```python
 import sys
@@ -250,7 +256,9 @@ else:
     print(-1)
 ```
 
-# поиск медианы двух массивов
+# 4. Поиск медианы двух отсортированных массивов
+
+Эта задача находит медиану двух отсортированных массивов за логарифмическое время.
 
 ```python
 
@@ -280,7 +288,9 @@ def findMedianSortedArrays(nums1, nums2):
         return current
 ```
 
-# скобочные последовательности
+# 5. Генерация скобочных последовательностей
+
+Эта задача генерирует все возможные правильные скобочные последовательности заданной длины.
 
 ```go
 func generate(current string, open, close, n int, result *[]string) {
@@ -298,16 +308,18 @@ func generate(current string, open, close, n int, result *[]string) {
 }
 ```
 
-# является ли степенью двойки
+# 6. Является ли число степенью двойки
+
+Эта задача проверяет, является ли заданное число степенью двойки, используя побитовую операцию.
 
 ```go
 def is_power_of_two(n):
     return n > 0 and (n & (n - 1)) == 0
 ```
 
-# вероятность исчерпания супов
+# 7. Вероятность исчерпания супов
 
-You have two soups, A and B, each starting with n mL. On every turn, one of the following four serving operations is chosen at random, each with probability 0.25 independent of all previous turns:
+В этой задаче рассматриваются два супа, A и B, каждый из которых изначально содержит n мл. На каждом ходу выбирается одна из следующих четырех операций обслуживания, каждая из которых выбирается случайным образом с вероятностью 0.25 независимо от всех предыдущих ходов:
 
 pour 100 mL from type A and 0 mL from type B
 pour 75 mL from type A and 25 mL from type B
@@ -362,7 +374,10 @@ func main() {
 }
 ```
 
-# степень тройки
+# 8. Является ли число степенью тройки
+
+Эта задача проверяет, является ли заданное число степенью тройки.
+
 ```python
 def is_power_of_three(n):
     if n < 1:
@@ -372,7 +387,9 @@ def is_power_of_three(n):
     return n == 1
 ```
 
-# найти позицию для вставки
+# 9. Найти позицию для вставки
+
+Эта задача находит индекс, на который нужно вставить элемент в отсортированный массив, чтобы сохранить порядок.
 
 ```go
 func abs(x int) int {
@@ -402,7 +419,10 @@ func neghbor(goods []uint, need int) int {
 }
 ```
 
-# heap
+# 10. Куча (Heap)
+
+Эта задача реализует структуру данных куча (heap), которая используется для реализации приоритетной очереди.
+
 ```go
 // Определяем тип для приоритетной очереди (max-heap)
 type Class struct {
@@ -437,7 +457,9 @@ func (h *MaxHeap) Pop() interface{} {
 ```
 
 
-# обход дерева
+# 11. Обход дерева
+
+Эта задача реализует различные способы обхода бинарного дерева (в глубину и в ширину).
 
 ```go
 package main
@@ -606,7 +628,9 @@ func main() {
 }
 ```
 
-# поиск максимальной подстроки с невстречающимися символами
+# 12. Поиск максимальной подстроки без повторяющихся символов
+
+Эта задача находит длину самой длинной подстроки без повторяющихся символов.
 
 ```go
 func lengthOfLongestSubstring(s string) int {
@@ -626,7 +650,9 @@ func lengthOfLongestSubstring(s string) int {
 }
 ```
 
-# обход дерева в ширину
+# 13. Обход дерева в ширину
+
+Эта задача реализует алгоритм обхода бинарного дерева в ширину (BFS).
 
 ```python
 class Solution:
@@ -662,7 +688,10 @@ class Solution:
         return result
 ```
 
-# минимальный путь
+# 14. Минимальная глубина бинарного дерева
+
+Эта задача находит минимальную глубину бинарного дерева.
+
  ```python
  class Solution:
     def minDepth(self, root):
@@ -691,15 +720,15 @@ class Solution:
 #    import atexit; atexit.register(lambda: open("display_runtime.txt", "w").write("0"))
 ```
 
-# перестановка гласных
+# 15. Перестановка гласных
 
-Given a 0-indexed string s, permute s to get a new string t such that:
+Для заданной строки s, переставить символы, чтобы получить новую строку t такую, что:
 
-All consonants remain in their original places. More formally, if there is an index i with 0 <= i < s.length such that s[i] is a consonant, then t[i] = s[i].
-The vowels must be sorted in the nondecreasing order of their ASCII values. More formally, for pairs of indices i, j with 0 <= i < j < s.length such that s[i] and s[j] are vowels, then t[i] must not have a higher ASCII value than t[j].
-Return the resulting string.
+- Все согласные остаются на своих местах. Более формально, если есть индекс i такой, что 0 <= i < s.length и s[i] - согласная, то t[i] = s[i].
+- Гласные должны быть отсортированы в неубывающем порядке по их ASCII значениям. Более формально, для пар индексов i, j таких, что 0 <= i < j < s.length и s[i] и s[j] - гласные, t[i] не должно иметь более высокое ASCII значение, чем t[j].
+- Вернуть результирующую строку.
 
-The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in lowercase or uppercase. Consonants comprise all letters that are not vowels.
+Гласные: 'a', 'e', 'i', 'o', 'u'. Согласные - все остальные буквы.
 
 ```go
 import "container/heap"
@@ -790,14 +819,16 @@ func sortVowels(s string) string {
             sb.WriteRune(p)
             vowels[p]--
         } else {
-            sb.WriteRune(v)      
+            sb.WriteRune(v)
         }
     }
     return sb.String()
 }
-```
 
-# проверка BST на валидность
+
+# 16. Проверка BST на валидность
+
+Эта задача проверяет, является ли бинарное дерево корректным бинарным деревом поиска (BST).
 
 ```go
 // стеком
@@ -861,7 +892,7 @@ func isValid(node *TreeNode, low, high int64) bool {
     // если текущая вершина не удволетворяет условиям BST то и все
     // дерево не является правильным BST и возвращаем false
     nodeValue := int64(node.Val)
-    if low >= nodeValue || nodeValue >= high) {
+    if low >= nodeValue || nodeValue >= high {
         return false;
     }
     // обновляем минимальное и максимальное значение для поддеревьев
@@ -874,7 +905,9 @@ func isValidBST(root *TreeNode) bool {
 }
 ```
 
-# из массива в дерево
+# 17. Преобразование отсортированного массива в BST
+
+Эта задача преобразует отсортированный массив в высотно-сбалансированное бинарное дерево поиска.
 
 ```go
 func buldBST(nums []int, l, r int) *TreeNode {
@@ -901,7 +934,9 @@ func sortedArrayToBST(nums []int) *TreeNode {
 }
 ```
 
-# К-ый наименьшый элемент в BST
+# 18. K-й наименьший элемент в BST
+
+Эта задача находит k-й наименьший элемент в бинарном дереве поиска.
 
 ```go
 func inorder(node *TreeNode, k *int) *TreeNode {
@@ -933,13 +968,17 @@ func kthSmallest(root *TreeNode, k int) int {
 }
 ```
 
-# Дано два узла бинарного дерева p и q. Нужно вернуть их наименьшего общего предка (LCA). При этом нужно решить за O(1) по дополнительной памяти
+# 19. Наименьший общий предок (LCA) в бинарном дереве с родительскими ссылками
+
+Дано два узла бинарного дерева p и q. Нужно вернуть их наименьшего общего предка (LCA). При этом нужно решить за O(1) по дополнительной памяти.
 Каждый узел помимо детей хранит ссылку на родительский узел
-class Node {
-    public int val;
-    public Node left;
-    public Node right;
-    public Node parent;
+
+// Определение структуры узла бинарного дерева
+type Node {
+    Val   int
+    Left  *Node
+    Right *Node
+    Parent *Node
 }
 
 ```go
@@ -976,7 +1015,9 @@ func lowestCommonAncestor(p *Node, q *Node) *Node {
 }
 ```
 
-# задача восстановление дерева где два узла поменены местами in-order обход
+# 20. Восстановление дерева, где два узла поменяны местами
+
+Эта задача восстанавливает бинарное дерево поиска, в котором два узла были случайно поменяны местами.
 
 ```go
 package main
@@ -1099,7 +1140,9 @@ func main() {
 }
 ```
 
-# найти ближайшего соседа в ВST дереве и написать решение на golang c сложностью алгоритма
+# 21. Найти ближайшее значение в BST
+
+Эта задача находит значение в BST, которое наиболее близко к заданному значению.
 
 ```go
 package main
@@ -1284,6 +1327,10 @@ func insert(root *TreeNode, val int) *TreeNode {
     return root
 }
 ```
+# 22. Вставка значения в BST
+
+Эта задача реализует вставку значения в бинарное дерево поиска.
+
 ```python
 def insert_into_bst(root, val):
     """
@@ -1299,6 +1346,11 @@ def insert_into_bst(root, val):
     
     return root
 ```
+
+# 23. Проверка сбалансированности дерева
+
+Эта задача проверяет, является ли бинарное дерево сбалансированным по высоте.
+
 ```go
 package main
 
@@ -1369,7 +1421,9 @@ func main() {
 }
 ```
 
-# максимальная дистанция
+# 24. Максимальное расстояние до ближайшего человека
+
+Эта задача находит максимальное расстояние до ближайшего человека в массиве сидений.
 
 ```go
 func maxDistToClosest(seats []int) int {
@@ -1392,6 +1446,10 @@ func maxDistToClosest(seats []int) int {
     return max(sum, result)
 }
 ```
+
+# 25. Проверка перестановки
+
+Эта задача проверяет, является ли одна строка перестановкой другой строки.
 
 ```go
 func checkInclusion(s1 string, s2 string) bool {
@@ -1427,6 +1485,10 @@ func checkInclusion(s1 string, s2 string) bool {
 }
 ```
 
+# 26. Слияние интервалов
+
+Эта задача объединяет перекрывающиеся интервалы в массиве.
+
 ```go
 func merge(intervals [][]int) [][]int {
 
@@ -1453,6 +1515,10 @@ func merge(intervals [][]int) [][]int {
     return result
 }
 ```
+
+# 27. Рандомизированный набор
+
+Эта задача реализует структуру данных, которая поддерживает вставку, удаление и получение случайного элемента за O(1).
 
 ```go
 type RandomizedSet struct {
@@ -1510,29 +1576,37 @@ func (this *RandomizedSet) GetRandom() int {
  */
  ```
 
+# 28. Найти k ближайших элементов
+
+Эта задача находит k элементов в отсортированном массиве, которые ближе всего к заданному значению x.
+
  ```go
- func abs(a int) int {
-    if a < 0 {
-        return -a
-    }
-    return a
-}
+  func abs(a int) int {
+     if a < 0 {
+         return -a
+     }
+     return a
+ }
 
-func findClosestElements(arr []int, k int, x int) []int {
-    left := 0
-    right := len(arr) - 1
-    
-    for right - left >= k {
-        if abs(arr[left] - x) > abs(arr[right] - x) {
-            left++
-        } else {
-            right--
-        }
-    }
+ func findClosestElements(arr []int, k int, x int) []int {
+     left := 0
+     right := len(arr) - 1
+     
+     for right - left >= k {
+         if abs(arr[left] - x) > abs(arr[right] - x) {
+             left++
+         } else {
+             right--
+         }
+     }
 
-    return arr[left:right+1]
-}
+     return arr[left:right+1]
+ }
 ```
+
+# 29. Стек с минимальным
+
+Эта задача реализует стек, который поддерживает операции push, pop, top и получения минимального элемента за O(1).
 
 ```go
 type MinStack struct {
@@ -1579,6 +1653,10 @@ func (this *MinStack) GetMin() int {
 }
 ```
 
+# 30. Проверка на одно редакционное расстояние
+
+Эта задача проверяет, можно ли преобразовать одну строку в другую с помощью одного редакционного действия (вставка, удаление или замена символа).
+
 ```python
 #2. Неэффективное сравнение строк с использованием срезов
 #Проблема: хотя текущее решение верно, использование срезов строк ( s[i+1:]и t[i+1:]) создаёт новые строковые #объекты в Python, что может быть неэффективно для очень длинных строк. Это добавляет ненужную сложность, #связанную с пространством.
@@ -1601,9 +1679,13 @@ def isOneEditDistance(self, s: str, t: str) -> bool:
             else:
                 # Compare s[i+1:] with t[i:] without creating substrings
                 return all(s[j + 1] == t[j] for j in range(i, len_t))
-
+    
     return len_s == len_t + 1
 ```
+
+# 31. Палиндром с возможностью удаления одного символа
+
+Эта задача проверяет, можно ли получить палиндром, удалив не более одного символа из строки.
 
 ```go
 func validPalindrome(s string) bool {
@@ -1612,7 +1694,7 @@ func validPalindrome(s string) bool {
    
    if len(s) <= 2 {
     return true
-  }
+ }
 
    for left < right {
         if s[left] != s[right] {
@@ -1635,6 +1717,10 @@ func isPalindome(s string, l, r int) bool {
     return true
 }
 ```
+
+# 32. Поиск всех анаграмм в строке
+
+Эта задача находит все индексы в строке s, где начинается анаграмма строки p.
 
 ```go
 func findAnagrams(s string, p string) []int {
@@ -1753,6 +1839,10 @@ func main() {
 }
 ```
 
+# 34. Проверка вертикальной симметрии точек
+
+Дан массив точек с целочисленными координатами (x, y). Определить, существует ли вертикальная прямая, делящая все точки, не лежащие на ней, на 2 симметричных относительно этой прямой набора точек.
+
 ```go
 package main
 
@@ -1766,12 +1856,12 @@ func isVertSym(arr [][2]int) bool {
         return true
     }
 
-    minX, maxY := arr[0][0], arr[0][0]
+    minX, maxX := arr[0][0], arr[0][0]
     p := make(map[[2]int]int)
 
     for _, v := range arr {
         minX = min(minX, v[0])
-        maxX = max(maxY, v[0])
+        maxX = max(maxX, v[0])
         p[v]++
     }
 
@@ -1796,6 +1886,10 @@ func main() {
     println(isVertSym([][2]int{{0, 0}, {1, 0}, {3, 0}})) // false
 }
 ```
+
+# 35. Квадраты отсортированного массива
+
+Эта задача возвращает массив квадратов каждого числа в отсортированном массиве, также отсортированный по возрастанию.
 
 ```go
 func sortedSquares(nums []int) []int {
@@ -1822,6 +1916,11 @@ func sortedSquares(nums []int) []int {
     return result
 }
 ```
+
+# 36. Найти дублирующиеся поддеревья
+
+Эта задача находит все поддеревья, которые встречаются более одного раза в бинарном дереве.
+
 ```go
 /**
  * Definition for a binary tree node.
@@ -1863,3 +1962,125 @@ func findDuplicateSubtrees(root *TreeNode) []*TreeNode {
     return result
 }
 ```
+# 37. спроектировать банковский аппарат
+
+```go
+type ATM struct {
+    bank [5]int
+}
+
+
+func Constructor() ATM {
+    return ATM{}
+}
+
+
+func (this *ATM) Deposit(banknotesCount []int)  {
+    for i, v := range banknotesCount {
+        this.bank[i] += v
+    }
+}
+
+
+func (this *ATM) Withdraw(amount int) []int {
+    result := make([]int,5)
+
+    checkAmount := func(cup int, idx int ) int {
+        if amount >= cup && this.bank[idx] > 0 {
+            result[idx] = min(amount / cup, this.bank[idx])
+            amount -= result[idx]*cup
+        }
+        return amount
+    }
+
+    amount = checkAmount(500,4)
+    amount = checkAmount(200,3)
+    amount = checkAmount(100,2)
+    amount = checkAmount(50,1)
+    amount = checkAmount(20,0)
+
+    if amount != 0 {
+        return []int{-1}
+    }
+
+    for i, v := range result {
+        this.bank[i] -= v
+    }
+
+    return result
+}
+
+
+/**
+ * Your ATM object will be instantiated and called as such:
+ * obj := Constructor();
+ * obj.Deposit(banknotesCount);
+ * param_2 := obj.Withdraw(amount);
+ */
+```
+
+# 38. найти все комбинации чисел что в сумме даст k
+
+```go
+func subarraySum(nums []int, k int) int {
+    count := 0
+    sum := 0
+    prefixSum := make(map[int]int)
+    prefixSum[0] = 1 // Важно: сумма пустого подмассива равна 0
+    
+    for i := 0; i < len(nums); i++ {
+        sum += nums[i]
+        
+        // Если (sum - k) существует в хэш-таблице, значит есть подмассив с суммой k
+        if val, exists := prefixSum[sum - k]; exists {
+            count += val
+        }
+        
+        // Обновляем количество вхождений текущей суммы
+        prefixSum[sum]++
+    }
+    
+    return count
+}
+```
+
+# 39. удалив один элемент - получите максимальную непрерывную сумму едениц
+
+```go
+func longestSubarray(nums []int) int {
+    left := 0        // левая граница окна
+    zeroCount := 0   // количество нулей в текущем окне
+    maxLength := 0   // максимальная длина подмассива
+    
+    for right := 0; right < len(nums); right++ {
+        // Если встречаем ноль, увеличиваем счетчик нулей
+        if nums[right] == 0 {
+            zeroCount++
+        }
+        
+        // Если нулей больше 1, сдвигаем левую границу
+        for zeroCount > 1 {
+            if nums[left] == 0 {
+                zeroCount--
+            }
+            left++
+        }
+        
+        // Обновляем максимальную длину
+        // Вычитаем 1, так как один элемент должен быть удален
+        currentLength := right - left
+        if currentLength > maxLength {
+            maxLength = currentLength
+        }
+    }
+    
+    // Если весь массив состоит из единиц, нужно удалить один элемент
+    if maxLength == len(nums) {
+        return maxLength - 1
+    }
+    
+    return maxLength
+}
+```
+
+

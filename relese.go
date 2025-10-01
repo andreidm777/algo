@@ -159,7 +159,7 @@ func lengthOfLongestSubstring(s string) int {
 /**
  * Найти ближайшего общего предка двух узлов дерева
  * Ограничение по памяти O(1)
- */
+
 
 record Node(
     Node parent,
@@ -171,15 +171,15 @@ public Node lowestCommonAncestor(Node a, Node b) {
     if (a == null || b == null) {
         return null;
     }
-    
+
     // Находим глубину каждого узла
     int depthA = findDepth(a);
     int depthB = findDepth(b);
-    
+
     // Выравниваем узлы по глубине
     Node nodeA = a;
     Node nodeB = b;
-    
+
     if (depthA > depthB) {
         // Поднимаем узел A до уровня B
         int diff = depthA - depthB;
@@ -193,28 +193,29 @@ public Node lowestCommonAncestor(Node a, Node b) {
             nodeB = nodeB.parent;
         }
     }
-    
+
     // Поднимаем оба узла одновременно, пока не найдем общего предка
     while (nodeA != nodeB) {
         nodeA = nodeA.parent;
         nodeB = nodeB.parent;
     }
-    
+
     return nodeA; // nodeA == nodeB, это LCA
 }
 
 private int findDepth(Node node) {
     int depth = 0;
     Node current = node;
-    
+
     while (current != null) {
         depth++;
         current = current.parent;
     }
-    
+
     return depth;
 }
 
 //Память: O(1) - используем только несколько переменных
 
 //Время: O(h) - где h высота дерева
+*/
