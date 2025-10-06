@@ -2270,3 +2270,165 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
     return root
 }
 ```
+
+# 44. восстановление маршрута в лексографическом порядке
+
+```go
+func findItinerary(tickets [][]string) []string {
+    // Создаем граф в виде словаря
+    graph := make(map[string][]string)
+    
+    // Заполняем граф
+    for _, ticket := range tickets {
+        from, to := ticket[0], ticket[1]
+        graph[from] = append(graph[from], to)
+    }
+    
+    // Сортируем пункты назначения для каждого аэропорта в лексикографическом порядке
+    for key := range graph {
+        sort.Strings(graph[key])
+    }
+    
+    var result []string
+    
+    // DFS функция для обхода графа
+    var dfs func(airport string)
+    dfs = func(airport string) {
+        // Пока есть куда лететь из текущего аэропорта
+        for len(graph[airport]) > 0 {
+            // Берем первый (наименьший в лексикографическом порядке) пункт назначения
+            next := graph[airport][0]
+            // Удаляем его из списка доступных
+            graph[airport] = graph[airport][1:]
+            // Рекурсивно посещаем следующий аэропорт
+            dfs(next)
+        }
+        // Добавляем аэропорт в результат (в обратном порядке)
+        result = append([]string{airport}, result...)
+    }
+    
+    // Начинаем с JFK
+    dfs("JFK")
+    
+    return result
+}
+```
+
+# 45. polindrome
+
+```go
+func isAlpha(a byte) bool {
+    return (a >= 'A' && a <= 'Z') || (a >= 'a' && a <= 'z') || (a >= '0' && a <= '9')
+}
+
+func toLower(a byte) byte {
+    if a >= 'A' && a <= 'Z' {
+        return a + 'a' - 'A'
+    }
+
+    return a
+}
+
+func isPalindrome(s string) bool {
+    l := 0
+    r := len(s) - 1
+    for l < r {
+        if !isAlpha(s[l]) {
+            l++
+            continue
+        }
+        if !isAlpha(s[r]) {
+            r--
+            continue
+        }
+        if toLower(s[r]) != toLower(s[l]) {
+            return false
+        }
+
+        r--
+        l++
+    }
+
+    return true
+}
+```
+# 46 - строковой калькулятор
+
+```go
+func calculate(s string) int {
+    stack := []int{}
+    num := 0
+    sign := '+'
+    
+    for i, ch := range s {
+        if ch >= '0' && ch <= '9' {
+            num = num*10 + int(ch-'0')
+        }
+        
+        if (ch != ' ' && (ch < '0' || ch > '9')) || i == len(s)-1 {
+            switch sign {
+            case '+':
+                stack = append(stack, num)
+            case '-':
+                stack = append(stack, -num)
+            case '*':
+                // Умножение: извлекаем последний элемент, умножаем и кладем обратно
+                last := stack[len(stack)-1]
+                stack = stack[:len(stack)-1]
+                stack = append(stack, last*num)
+            case '/':
+                // Деление: извлекаем последний элемент, делим и кладем обратно
+                last := stack[len(stack)-1]
+                stack = stack[:len(stack)-1]
+                stack = append(stack, last/num)
+            }
+            
+            sign = ch
+            num = 0
+        }
+    }
+    
+    // Суммируем все элементы в стеке
+    result := 0
+    for _, val := range stack {
+        result += val
+    }
+    
+    return result
+}
+```
+
+# 47. - Given the head of a linked list, remove the nth node from the end of the list and return its head. реши на golang за один проход
+
+```go
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+    // Создаем фиктивный узел для упрощения обработки случая удаления головы
+    dummy := &ListNode{Next: head}
+    
+    // Два указателя: fast и slow
+    fast, slow := dummy, dummy
+    
+    // Перемещаем fast на n+1 шагов вперед
+    for i := 0; i <= n; i++ {
+        fast = fast.Next
+    }
+    
+    // Перемещаем оба указателя одновременно, пока fast не достигнет конца
+    for fast != nil {
+        fast = fast.Next
+        slow = slow.Next
+    }
+    
+    // Удаляем n-й узел с конца
+    slow.Next = slow.Next.Next
+    
+    return dummy.Next
+}
+```
