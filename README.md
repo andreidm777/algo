@@ -2398,7 +2398,7 @@ func calculate(s string) int {
 }
 ```
 
-# 47. - Given the head of a linked list, remove the nth node from the end of the list and return its head. реши на golang за один проход
+# 47. - Given the head of a linked list, remove the nth node from the end of the list and return its head.
 
 ```go
 /**
@@ -2430,5 +2430,614 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
     slow.Next = slow.Next.Next
     
     return dummy.Next
+}
+```
+
+# 48 Вам даны два списка замкнутых интервалов, firstListи secondList, где и . Каждый список интервалов попарно не пересекается и отсортирован в порядке .firstList[i] = [starti, endi]secondList[j] = [startj, endj]
+
+Верните пересечение этих двух интервальных списков .
+
+Замкнутый интервал [a, b] (с a <= b) обозначает множество действительных чисел xс a <= x <= b.
+
+Пересечение двух замкнутых интервалов — это множество действительных чисел, которые либо пусты, либо представлены в виде замкнутого интервала. Например, пересечение [1, 3]и [2, 4]равно [2, 3].
+
+```go
+func intervalIntersection(firstList [][]int, secondList [][]int) [][]int {
+    var result [][]int
+    i, j := 0, 0
+    
+    for i < len(firstList) && j < len(secondList) {
+        first := firstList[i]
+        second := secondList[j]
+        
+        // Находим пересечение текущих интервалов
+        start := max(first[0], second[0])
+        end := min(first[1], second[1])
+        
+        // Если пересечение существует (start <= end), добавляем его в результат
+        if start <= end {
+            result = append(result, []int{start, end})
+        }
+        
+        // Переходим к следующему интервалу в том списке, который заканчивается раньше
+        if first[1] < second[1] {
+            i++
+        } else {
+            j++
+        }
+    }
+    
+    return result
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+```
+
+# 49. There is an integer array nums sorted in ascending order (with distinct values).
+
+Prior to being passed to your function, nums is possibly left rotated at an unknown index k (1 <= k < nums.length) such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). For example, [0,1,2,4,5,6,7] might be left rotated by 3 indices and become [4,5,6,7,0,1,2].
+
+Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or -1 if it is not in nums.
+
+You must write an algorithm with O(log n) runtime complexity
+
+```go
+func search(nums []int, target int) int {
+    left, right := 0, len(nums)-1
+    
+    for left <= right {
+        mid := left + (right-left)/2
+        
+        // Если нашли целевой элемент
+        if nums[mid] == target {
+            return mid
+        }
+        
+        // Определяем, какая половина отсортирована
+        if nums[left] <= nums[mid] {
+            // Левая половина отсортирована
+            if nums[left] <= target && target < nums[mid] {
+                // Цель в отсортированной левой половине
+                right = mid - 1
+            } else {
+                // Цель в правой половине
+                left = mid + 1
+            }
+        } else {
+            // Правая половина отсортирована
+            if nums[mid] < target && target <= nums[right] {
+                // Цель в отсортированной правой половине
+                left = mid + 1
+            } else {
+                // Цель в левой половине
+                right = mid - 1
+            }
+        }
+    }
+    
+    return -1
+}
+```
+
+# 50. Number of Islands
+
+Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+
+An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water
+
+```go
+func numIslands(grid [][]byte) int {
+    if len(grid) == 0 || len(grid[0]) == 0 {
+        return 0
+    }
+    
+    m, n := len(grid), len(grid[0])
+    count := 0
+    
+    // Функция для DFS
+    var dfs func(i, j int)
+    dfs = func(i, j int) {
+        // Проверяем границы и что это земля
+        if i < 0 || i >= m || j < 0 || j >= n || grid[i][j] != '1' {
+            return
+        }
+        
+        // Помечаем как посещенную
+        grid[i][j] = '0'
+        
+        // Рекурсивно посещаем всех соседей
+        dfs(i+1, j) // вниз
+        dfs(i-1, j) // вверх
+        dfs(i, j+1) // вправо
+        dfs(i, j-1) // влево
+    }
+    
+    // Проходим по всей сетке
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if grid[i][j] == '1' {
+                count++
+                dfs(i, j)
+            }
+        }
+    }
+    
+    return count
+}
+```
+# 51. Lowest Common Ancestor of a Binary Tree III
+
+Дано бинарное дерево, где каждый узел имеет ссылку на своего родителя. Найти наименьшего общего предка (LCA) двух узлов p и q в этом дереве.
+
+Особенности:
+
+Каждый узел имеет структуру:
+
+```go
+type Node struct {
+    Val    int
+    Left   *Node
+    Right  *Node
+    Parent *Node
+}
+```
+Узел является предком самого себя
+
+Гарантируется, что оба узла p и q существуют в дереве
+
+Пример:
+
+```text
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: LCA узлов 5 и 1 равен 3
+```
+
+```go
+/**
+ * Definition for a Node.
+ * type Node struct {
+ *     Val int
+ *     Left *Node
+ *     Right *Node
+ *     Parent *Node
+ * }
+ */
+
+func lowestCommonAncestor(p *Node, q *Node) *Node {
+    // Собираем всех предков узла p
+    ancestors := make(map[*Node]bool)
+    current := p
+    for current != nil {
+        ancestors[current] = true
+        current = current.Parent
+    }
+    
+    // Ищем первого общего предка в цепочке q
+    current = q
+    for current != nil {
+        if ancestors[current] {
+            return current
+        }
+        current = current.Parent
+    }
+    
+    return nil // По условию всегда должен найтись LCA
+}
+
+// Альтернативное решение с двумя указателями (более эффективное по памяти)
+func lowestCommonAncestorOptimized(p *Node, q *Node) *Node {
+    ptr1, ptr2 := p, q
+    
+    // Два указателя идут по своим цепочкам
+    // Когда один доходит до конца, он переходит к началу другого
+    // Это гарантирует, что они встретятся в точке пересечения (LCA)
+    for ptr1 != ptr2 {
+        if ptr1.Parent != nil {
+            ptr1 = ptr1.Parent
+        } else {
+            ptr1 = q
+        }
+        
+        if ptr2.Parent != nil {
+            ptr2 = ptr2.Parent
+        } else {
+            ptr2 = p
+        }
+    }
+    
+    return ptr1
+}
+```
+
+# 52. Longest Substring with At Most K Distinct Characters
+
+Дана строка s и целое число k. Найти длину самой длинной подстроки, которая содержит не более k различных символов.
+
+Примеры:
+
+text
+Input: s = "eceba", k = 2
+Output: 3
+Explanation: Подстрока "ece" имеет длину 3 и содержит 2 различных символа
+
+Input: s = "aa", k = 1
+Output: 2
+Explanation: Подстрока "aa" имеет длину 2 и содержит 1 символ
+
+```go
+func lengthOfLongestSubstringKDistinctASCII(s string, k int) int {
+    if k == 0 {
+        return 0
+    }
+    
+    n := len(s)
+    if n == 0 {
+        return 0
+    }
+    
+    // Для ASCII символов (128 или 256 возможных)
+    charCount := make([]int, 128)
+    left := 0
+    distinctCount := 0
+    maxLength := 0
+    
+    for right := 0; right < n; right++ {
+        // Добавляем правый символ
+        if charCount[s[right]] == 0 {
+            distinctCount++
+        }
+        charCount[s[right]]++
+        
+        // Сужаем окно пока количество различных символов > k
+        for distinctCount > k {
+            charCount[s[left]]--
+            if charCount[s[left]] == 0 {
+                distinctCount--
+            }
+            left++
+        }
+        
+        // Обновляем максимальную длину
+        maxLength = max(maxLength, right - left + 1)
+    }
+    
+    return maxLength
+}
+```
+# 53. Дано целое число n, вернуть наименьшее количество полных квадратов чисел, сумма которых равна n .
+
+Полный квадрат — это целое число, являющееся квадратом целого числа; другими словами, это произведение некоторого целого числа на самого себя. Например, 1, 4, 9, и 16являются полными квадратами, тогда как 3и 11— нет.
+Динамическое программирование: Мы используем массив dp, где dp[i] хранит минимальное количество полных квадратов, сумма которых равна i.
+
+Базовый случай: dp[0] = 0 (для получения суммы 0 не нужно никаких квадратов).
+
+Рекуррентное соотношение: Для каждого числа i мы проверяем все возможные квадраты j*j, которые меньше или равны i. Тогда:
+
+dp[i] = min(dp[i], dp[i - j*j] + 1)
+
+Это означает: мы берем минимум из текущего значения и значения для (i - j*j) плюс один (поскольку мы добавляем квадрат j*j)
+
+Временная сложность: O(n√n), так как для каждого числа до n мы проверяем до √n квадратов.
+
+Пространственная сложность: O(n) для хранения массива dp.
+
+```go
+func numSquares(n int) int {
+    // Создаем массив для хранения минимального количества квадратов для каждого числа
+    dp := make([]int, n+1)
+
+    for i := 1; i <= n; i++ {
+        // Инициализируем максимальным возможным значением
+        dp[i] = i
+        
+        // Перебираем все квадраты, меньшие или равные i
+        for j := 1; j*j <= i; j++ {
+            dp[i] = min(dp[i], dp[i - j*j] + 1)
+        }
+    }
+    
+    return dp[n]
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+
+```
+
+# 54. Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+
+You must write an algorithm that runs in O(n) time and without using the division operation
+
+```go
+func productExceptSelf(nums []int) []int {
+    fix := 1
+
+    answer := make([]int, len(nums))
+
+    for i := range answer {
+        answer[i] = 1
+    }
+
+    for i, v := range nums {
+        answer[i] = fix
+        fix *= v
+    }
+
+    fix = 1
+
+    for i := len(nums) - 1; i >= 0; i-- {
+        answer[i] *= fix
+        fix *= nums[i]
+    }
+
+    return answer
+}
+```
+
+# 55. Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+
+```go
+func isSymmetric(root *TreeNode) bool {
+
+    var reverse func(node1 *TreeNode, node2 *TreeNode) bool
+
+    reverse = func(node1 *TreeNode, node2 *TreeNode) bool {
+        if node1 == nil && node2 == nil {
+            return true
+        } else if node1 == nil || node2 == nil {
+            return false
+        }
+
+        if !reverse(node1.Left, node2.Right) {
+            return false
+        }
+
+        if node1.Val != node2.Val {
+            return false
+        }
+
+        if !reverse(node1.Right, node2.Left) {
+            return false
+        }
+
+        return true
+    }
+
+    return reverse(root.Left, root.Right)
+}
+```
+
+# 56 Дан массив целых чисел nums. Найдитеподмассивс наибольшей суммой и вернуть ее сумму  (алгоритм Кадане):
+
+```go
+func maxSubArray(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
+    
+    maxSum := nums[0]
+    currentSum := nums[0]
+    
+    for i := 1; i < len(nums); i++ {
+        // Выбираем максимум между текущим элементом и суммой предыдущего подмассива + текущий элемент
+        currentSum = max(nums[i], currentSum + nums[i])
+        // Обновляем глобальный максимум
+        maxSum = max(maxSum, currentSum)
+    }
+    
+    return maxSum
+}
+```
+
+# 57. Product of Two Run-Length Encoded Arrays
+
+Run-length encoding (RLE) - это алгоритм сжатия, который использует последовательности повторяющихся элементов. Кодируемый массив разбивается на серии (runs) последовательных одинаковых элементов. Каждая серия кодируется как пара (значение, длина).
+
+Например, массив [1,1,1,2,2,3] может быть закодирован как [[1,3],[2,2],[3,1]].
+
+Даны два RLE-закодированных массива encoded1 и encoded2, представляющих массивы arr1 и arr2 одинаковой длины. Оба arr1 и arr2 имеют одинаковую длину. Нам нужно найти произведение этих двух массивов и вернуть результат также в RLE-формате.
+
+Произведение массивов определяется как массив, где каждый элемент равен произведению соответствующих элементов из arr1 и arr2:
+
+Пример
+
+```text
+Input: encoded1 = [[1,3],[2,3]], encoded2 = [[6,3],[3,3]]
+Output: [[6,6]]
+Explanation: 
+arr1 = [1,1,1,2,2,2], arr2 = [6,6,6,3,3,3]
+product = [1*6, 1*6, 1*6, 2*3, 2*3, 2*3] = [6,6,6,6,6,6]
+RLE = [[6,6]]
+```
+
+```go
+func findRLEArray(encoded1 [][]int, encoded2 [][]int) [][]int {
+    var result [][]int
+    
+    i, j := 0, 0
+    idx1, idx2 := 0, 0 // текущие индексы в распакованных массивах
+    
+    for i < len(encoded1) && j < len(encoded2) {
+        val1, freq1 := encoded1[i][0], encoded1[i][1]
+        val2, freq2 := encoded2[j][0], encoded2[j][1]
+        
+        product := val1 * val2
+        minFreq := min(freq1 - idx1, freq2 - idx2)
+        
+        // Добавляем или объединяем с последним элементом результата
+        if len(result) > 0 && result[len(result)-1][0] == product {
+            result[len(result)-1][1] += minFreq
+        } else {
+            result = append(result, []int{product, minFreq})
+        }
+        
+        // Обновляем индексы
+        idx1 += minFreq
+        idx2 += minFreq
+        
+        // Переходим к следующему сегменту если текущий исчерпан
+        if idx1 == freq1 {
+            i++
+            idx1 = 0
+        }
+        if idx2 == freq2 {
+            j++
+            idx2 = 0
+        }
+    }
+    
+    return result
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+```
+
+# 58. LRU Cache
+
+```go
+package main
+
+import "fmt"
+
+// Узел двусвязного списка
+type Node struct {
+    key   int
+    value int
+    prev  *Node
+    next  *Node
+}
+
+// LRUCache структура кэша
+type LRUCache struct {
+    capacity int
+    cache    map[int]*Node
+    head     *Node // фиктивный головной узел
+    tail     *Node // фиктивный хвостовой узел
+}
+
+func Constructor(capacity int) LRUCache {
+    lru := LRUCache{
+        capacity: capacity,
+        cache:    make(map[int]*Node),
+        head:     &Node{key: 0, value: 0},
+        tail:     &Node{key: 0, value: 0},
+    }
+    lru.head.next = lru.tail
+    lru.tail.prev = lru.head
+    return lru
+}
+
+// Вспомогательная функция для добавления узла после головного
+func (this *LRUCache) addNode(node *Node) {
+    node.prev = this.head
+    node.next = this.head.next
+    
+    this.head.next.prev = node
+    this.head.next = node
+}
+
+// Вспомогательная функция для удаления узла
+func (this *LRUCache) removeNode(node *Node) {
+    prev := node.prev
+    next := node.next
+    
+    prev.next = next
+    next.prev = prev
+}
+
+// Перемещение узла в начало (после головного)
+func (this *LRUCache) moveToHead(node *Node) {
+    this.removeNode(node)
+    this.addNode(node)
+}
+
+// Удаление последнего узла (перед хвостовым)
+func (this *LRUCache) popTail() *Node {
+    node := this.tail.prev
+    this.removeNode(node)
+    return node
+}
+
+func (this *LRUCache) Get(key int) int {
+    if node, exists := this.cache[key]; exists {
+        // Перемещаем узел в начало, т.к. он был использован
+        this.moveToHead(node)
+        return node.value
+    }
+    return -1
+}
+
+func (this *LRUCache) Put(key int, value int) {
+    if node, exists := this.cache[key]; exists {
+        // Обновляем значение и перемещаем в начало
+        node.value = value
+        this.moveToHead(node)
+    } else {
+        // Создаем новый узел
+        newNode := &Node{
+            key:   key,
+            value: value,
+        }
+        
+        // Добавляем в кэш и в список
+        this.cache[key] = newNode
+        this.addNode(newNode)
+        
+        // Если превысили capacity, удаляем наименее используемый
+        if len(this.cache) > this.capacity {
+            tail := this.popTail()
+            delete(this.cache, tail.key)
+        }
+    }
+}
+
+// Вспомогательная функция для отладки - печать текущего состояния кэша
+func (this *LRUCache) PrintCache() {
+    fmt.Printf("Cache (capacity: %d, size: %d): ", this.capacity, len(this.cache))
+    current := this.head.next
+    for current != this.tail {
+        fmt.Printf("(%d:%d) ", current.key, current.value)
+        current = current.next
+    }
+    fmt.Println()
+}
+
+// Пример использования
+func main() {
+    lru := Constructor(2)
+    
+    lru.Put(1, 1)
+    lru.Put(2, 2)
+    fmt.Println(lru.Get(1)) // returns 1
+    lru.Put(3, 3)           // evicts key 2
+    fmt.Println(lru.Get(2)) // returns -1 (not found)
+    lru.Put(4, 4)           // evicts key 1
+    fmt.Println(lru.Get(1)) // returns -1 (not found)
+    fmt.Println(lru.Get(3)) // returns 3
+    fmt.Println(lru.Get(4)) // returns 4
 }
 ```
